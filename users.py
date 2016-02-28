@@ -38,15 +38,6 @@ class User():
     basicQuestionsAnswered = False
     basicQuestionState = -1
 
-    # def getNextBasicQuestion(self):
-    #     # if not at the last question, increment the state
-    #     print "1. basic question state: ", self.basicQuestionState
-    #     if self.basicQuestionState < len(self.basicQuestions):
-    #         self.basicQuestionState += 1
-    #     print "2. basic question state: ", self.basicQuestionState
-    #     qstn = self.basicQuestions[self.basicQuestionState]
-    #     return qstn
-
     def getNextBasicQuestion(self):
         if self.basicQuestionState == -1:
             self.basicQuestionState = 0
@@ -68,8 +59,40 @@ class User():
     def setBasicQuestionsAnswered(self, state):
         self.basicQuestionsAnswered = state
 
+    #----------------------------------------------------------------
+    def askBasicQuestions(self, usrMsg):
+        botMsg = None
+        if self.basicQuestionsAnswered == False:
+            correctlyAnswered = False
+            if self.basicQuestionState > -1:
+                # he has answered last question. Evaluate and save this guy's answer.
+                correctlyAnswered = self.validateAndSaveBasicAnswer(usrMsg)
+            if correctlyAnswered == True or (self.basicQuestionState == -1 and correctlyAnswered == False):
+                print "right basic answer."
+                #check again if usrMsg completed the basic questions set?
+                if self.basicQuestionsAnswered == False:
+                    # some last basic question is still missing. ask next one
+                    print "moving on to next basic question."
+                    botMsg = self.getNextBasicQuestion()
+                    print "OUTGOING: asking next question: ", botMsg
+                    #self.respond(messageProtocolEntity, botMsg)
+                    #return ret
+                else:
+                    # all basic questions answered. fall through to pickup questions
+                    print "done with basic questions."
+            else:
+                #oops that was a wrong answer. shall we ask again?
+                print "wrong basic answer. Asking same question again"
+                botMsg = "Sorry! Invalid answer. Please try answering again. "+self.getNextBasicQuestion()
+                print "OUTGOING: ", botMsg
+                #self.respond(messageProtocolEntity, botMsg)
+                #return
+        # else self.basicQuestionsAnswered is True
 
-
+        return {
+            'botMsg': botMsg,
+            'basicDone': self.basicQuestionsAnswered
+        }
 
 
 
