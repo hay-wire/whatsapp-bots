@@ -21,7 +21,7 @@ class EchoLayer(YowInterfaceLayer):
         usr = self.getUser(phone)
 
         # make sure basic questions have been answered.
-        response = usr.askBasicQuestions(usrMsg)
+        response = usr.basicQuestions.askQuestions(usrMsg)
         if response['basicDone'] != True:
             self.respond(messageProtocolEntity, response['botMsg'])
             return
@@ -29,6 +29,8 @@ class EchoLayer(YowInterfaceLayer):
             print "basic is done."
             self.respond(messageProtocolEntity, "basic is done")
 
+        print "all done."
+        #usr.basicQuestions.askPickupQuestions(usrMsg)
 
 
     @ProtocolEntityCallback("receipt")
